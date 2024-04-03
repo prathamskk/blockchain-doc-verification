@@ -1,0 +1,14 @@
+open remix editor
+add verification sol to remix contracts folder 
+set compiler version to 0.8.17
+set environment to ganache
+compile verification sol
+deploy on ganache
+copy contract address
+copy ABI
+update contract address and ABI in the verification.js file and app.js file
+run npm install
+start live server
+install metamask
+add ganache network to metammask
+add ganache accounts to metamask

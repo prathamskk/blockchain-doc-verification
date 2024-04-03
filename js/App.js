@@ -1,10 +1,34 @@
 window.CONTRACT = {
-  address: "0xd665Dbe69A29CAB661991f651fcB060fF4C5d02E",
+  address: "0x9DD2E2cFDFf249317Ef0F3c770E679FDCEee6FA0",
   network: "HTTP://127.0.0.1:8545",
   explore: "Example : https://polygonscan.com/",
   // Your Contract ABI
 
   abi: [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "exporter",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "ipfsHash",
+          "type": "string"
+        }
+      ],
+      "name": "HashAdded",
+      "type": "event"
+    },
     {
       "inputs": [
         {
@@ -73,56 +97,6 @@ window.CONTRACT = {
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_addr",
-          "type": "address"
-        }
-      ],
-      "name": "deleteExporter",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "_hash",
-          "type": "bytes32"
-        }
-      ],
-      "name": "deleteHash",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "exporter",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "ipfsHash",
-          "type": "string"
-        }
-      ],
-      "name": "HashAdded",
-      "type": "event"
-    },
-    {
       "inputs": [],
       "name": "countExporters",
       "outputs": [
@@ -146,6 +120,32 @@ window.CONTRACT = {
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_addr",
+          "type": "address"
+        }
+      ],
+      "name": "deleteExporter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_hash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "deleteHash",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -221,15 +221,15 @@ async function connect() {
   if (window.ethereum) {
     try {
       const selectedAccount = await window.ethereum
-      .request({
-        method: "eth_requestAccounts",
-      })
-      .then((accounts) => {
-        return accounts[0];
-      })
-      .catch(() => {
-        throw Error("No account selected 👍");
-      });
+        .request({
+          method: "eth_requestAccounts",
+        })
+        .then((accounts) => {
+          return accounts[0];
+        })
+        .catch(() => {
+          throw Error("No account selected 👍");
+        });
       window.web3 = new Web3(new Web3.providers.HttpProvider(window.CONTRACT.network));
       // const providersAccounts = await window.web3.eth.getAccounts();
       // console.log(providersAccounts);
@@ -379,31 +379,6 @@ function printUploadInfo(result) {
   listen();
 }
 
-async function getFilebinInfo(filebinUrl, filebinId) {
-  try {
-    const response = await fetch(
-      `https://api.pdfrest.com/resource/${window.hashedfile}?format=url`,
-      {
-        method: "GET",
-        headers: {},
-      }
-    );
-
-    if (!response.ok) {
-      throw new Error(
-        "Failed to retrieve file information:",
-        await response.text()
-      );
-    }
-
-    const data = await response.json();
-    console.log(data); // This should contain information about the uploaded file
-    return data;
-  } catch (error) {
-    console.error("Error fetching file information:", error);
-    throw error; // Re-throw for potential handling in calling code
-  }
-}
 
 // async function uploadFileToIpfs() {
 //   const fileInput = document.getElementById("doc-file"); // Assuming you have an input element with id 'doc-file' for selecting files
@@ -443,7 +418,7 @@ async function uploadFileToIpfs() {
   const file = fileInput.files[0];
   const formData = new FormData();
   formData.append("file", file);
-  try{
+  try {
     const res = await axios.post("https://api.pinata.cloud/pinning/pinFileToIPFS", formData, {
       maxBodyLength: "Infinity",
       headers: {
@@ -499,7 +474,7 @@ async function sendHash() {
     console.log("hashedfile length greater than 4");
     await window.contract.methods
       .addDocHash(window.hashedfile, CID)
-      .send({ from: window.userAddress , gas: '1000000' })
+      .send({ from: window.userAddress, gas: '1000000' })
       .on("transactionHash", function (_hash) {
         $("#note").html(
           `<h5 class="text-info p-1 text-center">Please wait for transaction to be mined...</h5>`
@@ -916,7 +891,7 @@ function listen() {
     window.CONTRACT.address
   );
 
-  window.web3.eth.getBlockNumber().then((blockNumber)=>{
+  window.web3.eth.getBlockNumber().then((blockNumber) => {
     console.log(blockNumber);
     window.contract.getPastEvents(
       "HashAdded",
@@ -928,13 +903,13 @@ function listen() {
         toBlock: "latest",
       }
     )
-  .then(function(events){
-      console.log(events) // same results as the optional callback above
-  }).catch(function(errors){
-    console.log(errors) // same results as the optional callback above
-})
+      .then(function (events) {
+        console.log(events) // same results as the optional callback above
+      }).catch(function (errors) {
+        console.log(errors) // same results as the optional callback above
+      })
   })
- 
+
 }
 
 //If there is past tx then show them
@@ -956,7 +931,7 @@ function printTransactions(data) {
     const image = document.createElement("object");
     image.style = "width:100%;height: 100%;";
 
-    image.data = `https://ipfs.io/ipfs/${data[i].returnValues[1]}`;
+    image.data = `https://gray-abundant-wolf-888.mypinata.cloud/ipfs/${data[i].returnValues[1]}`;
     const num = document.createElement("h1");
     num.append(document.createTextNode(i + 1));
     a.appendChild(image);

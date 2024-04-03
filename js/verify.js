@@ -2,11 +2,35 @@
 //just provide the network address
 
 window.CONTRACT = {
-  address: "0xd665Dbe69A29CAB661991f651fcB060fF4C5d02E",
+  address: "0x9DD2E2cFDFf249317Ef0F3c770E679FDCEee6FA0",
   network: "HTTP://127.0.0.1:8545",
   explore: "https://polygonscan.com/",
   // Your Contract ABI
   abi: [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
+    {
+      "anonymous": false,
+      "inputs": [
+        {
+          "indexed": true,
+          "internalType": "address",
+          "name": "exporter",
+          "type": "address"
+        },
+        {
+          "indexed": false,
+          "internalType": "string",
+          "name": "ipfsHash",
+          "type": "string"
+        }
+      ],
+      "name": "HashAdded",
+      "type": "event"
+    },
     {
       "inputs": [
         {
@@ -75,56 +99,6 @@ window.CONTRACT = {
       "type": "function"
     },
     {
-      "inputs": [
-        {
-          "internalType": "address",
-          "name": "_addr",
-          "type": "address"
-        }
-      ],
-      "name": "deleteExporter",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [
-        {
-          "internalType": "bytes32",
-          "name": "_hash",
-          "type": "bytes32"
-        }
-      ],
-      "name": "deleteHash",
-      "outputs": [],
-      "stateMutability": "nonpayable",
-      "type": "function"
-    },
-    {
-      "inputs": [],
-      "stateMutability": "nonpayable",
-      "type": "constructor"
-    },
-    {
-      "anonymous": false,
-      "inputs": [
-        {
-          "indexed": true,
-          "internalType": "address",
-          "name": "exporter",
-          "type": "address"
-        },
-        {
-          "indexed": false,
-          "internalType": "string",
-          "name": "ipfsHash",
-          "type": "string"
-        }
-      ],
-      "name": "HashAdded",
-      "type": "event"
-    },
-    {
       "inputs": [],
       "name": "countExporters",
       "outputs": [
@@ -148,6 +122,32 @@ window.CONTRACT = {
         }
       ],
       "stateMutability": "view",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "address",
+          "name": "_addr",
+          "type": "address"
+        }
+      ],
+      "name": "deleteExporter",
+      "outputs": [],
+      "stateMutability": "nonpayable",
+      "type": "function"
+    },
+    {
+      "inputs": [
+        {
+          "internalType": "bytes32",
+          "name": "_hash",
+          "type": "bytes32"
+        }
+      ],
+      "name": "deleteHash",
+      "outputs": [],
+      "stateMutability": "nonpayable",
       "type": "function"
     },
     {
@@ -217,7 +217,7 @@ window.CONTRACT = {
       "type": "function"
     }
   ],
-};  
+};
 //I used Web3.providers.HttpProvider instead of MetaMask Provider so We can Verify Docs without Wallet
 const web3 = new Web3(new Web3.providers.HttpProvider(window.CONTRACT.network));
 const contract = new web3.eth.Contract(
@@ -242,7 +242,7 @@ async function verify_Hash() {
     */
     await contract.methods
       .findDocHash(window.hashedfile)
-      .call({ from: '0x21D95b591eb213ccde840c39BEd368D3980a048a' })
+      .call({ from: '0x3483d3Fa18D022CD9A56560b947763B191FeA78c' })
       .then((result) => {
         $(".transaction-status").removeClass("d-none");
         window.newHash = result;
@@ -356,7 +356,7 @@ function print_verification_info(result, is_verified) {
     );
     document.getElementById(
       "student-document"
-    ).src = `https://ipfs.io/ipfs/${result[3]}`;
+    ).src = `https://gray-abundant-wolf-888.mypinata.cloud/ipfs/${result[3]}`;
     document.getElementById("download-document").href =
       document.getElementById("student-document").src;
     $(".transaction-status").show();
